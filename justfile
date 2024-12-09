@@ -17,12 +17,12 @@ convert section="ak": verify_dependencies
     "pandoc --standalone --to man {} -o rendered_pages/man{{section}}/{/.}" \
     ::: markdown/*.md
 
-build section="ak": (setup section) (convert section)
+@build section="ak": (setup section) (convert section)
     ls rendered_pages/man{{section}}
-    @[ "$(ls -l markdown/ | wc -l)" -eq "$(ls -l rendered_pages/man{{section}} | wc -l)" ]
-    @echo "add the line 'export MANPATH=\$(manpath):$(realpath rendered_pages)' to your .zshrc file" 
-    @echo "add 'export MANSECT={{all_sections}}:{{section}}' to your .zshrc"
-    @echo "also check ~/.zshenv"
+    [ "$(ls -l markdown/ | wc -l)" -eq "$(ls -l rendered_pages/man{{section}} | wc -l)" ]
+    echo "add the line 'export MANPATH=\$(manpath):$(realpath rendered_pages)' to your .zshrc file" 
+    echo "add 'export MANSECT={{all_sections}}:{{section}}' to your .zshrc"
+    echo "also check ~/.zshenv"
 
 # build & preview a single man page(without extension!)
 preview name:
