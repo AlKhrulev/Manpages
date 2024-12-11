@@ -1,4 +1,4 @@
-% Python(1) | General Commands Manual
+% Docker(1) | General Commands Manual
 % Alexander Khrulev(AlKhrulev \[at] GitHub)
 % 2024-12-07
 
