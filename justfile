@@ -19,7 +19,7 @@ mkdir section="ak":
 [group("build")]
 convert section="ak": verify_dependencies
     parallel \
-    "pandoc --standalone --to man {} -o rendered_pages/man{{section}}/{/.}" \
+    "pandoc --standalone --to man {} -o rendered_pages/man{{section}}/{/.}.{{section}}" \
     ::: markdown/*.md
 
 # set up a file structure and convert all markdown files into man pages
@@ -34,7 +34,7 @@ convert section="ak": verify_dependencies
 # build & preview a single man page(without extension!)
 [group("build")]
 preview markdown_file:
-    man <(pandoc --standalone --to man markdown/{{markdown_file}}.1.md)
+    man <(pandoc --standalone --to man markdown/{{markdown_file}}.md)
 
 # compress man pages into .gz files
 [group("working with man page files")]
