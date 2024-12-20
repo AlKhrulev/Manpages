@@ -21,6 +21,11 @@ convert section="ak": verify_dependencies
     parallel \
     "pandoc --standalone --to man {} -o rendered_pages/man{{section}}/{/.}.{{section}}" \
     ::: markdown/*.md
+    # automatically update doc's date to today(use a variable for clarity)
+    TODAY="$(date +%Y-%m-%d)" && \
+    parallel -q \
+    sed -i "3s/[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}/${TODAY}/" \
+    ::: rendered_pages/man{{section}}/*
 
 # set up a file structure and convert all markdown files into man pages
 [group("build")]
@@ -29,7 +34,7 @@ convert section="ak": verify_dependencies
     [ "$(ls -l markdown/ | wc -l)" -eq "$(ls -l rendered_pages/man{{section}} | wc -l)" ]
     echo "add the line 'export MANPATH=\$(manpath):$(realpath rendered_pages)' to your .zshrc file" 
     echo "add 'export MANSECT={{all_sections}}:{{section}}' to your .zshrc"
-    echo "also check ~/.zshenv"
+    echo "also check ~/.zshenv (if you use zsh)"
 
 # build & preview a single man page(without extension!)
 [group("build")]
