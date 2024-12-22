@@ -18,8 +18,8 @@ mkdir section="ak":
 # convert all markdown files into man pages
 [group("build")]
 convert section="ak": verify_dependencies
-    parallel \
-    "pandoc --standalone --to man {} -o rendered_pages/man{{section}}/{/.}.{{section}}" \
+    parallel -q \
+    pandoc --standalone --to man {} -o rendered_pages/man{{section}}/{/.}.{{section}} \
     ::: markdown/*.md
     # automatically update doc's date to today(use a variable for clarity)
     TODAY="$(date +%Y-%m-%d)" && \

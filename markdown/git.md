@@ -71,6 +71,17 @@ For each conflicting file, the makers will be added automatically. Then
 
 # Terminal Command Examples
 
+## Working with Commits
+
+`git add -i`
+: enable interactive mode. See `man git-add`->`INTERACTIVE MODE` for more info
+
+`git add --patch`
+:   essentially a shortcut to `git add -i`->`patch`
+
+`git commit --amend [--no-edit]`
+:   Add files to the previous commit and optionally keep the same msg
+
 ## Displaying Files and Differences
 
 ### Viewing Commit Logs
@@ -136,3 +147,11 @@ space in-between *RemoteName* and a colon. Ex. **git push origin :serverfix**
 
 git apply ... *PatchFile*
 :   Apply a *PatchFile* to the current repo
+
+git apply ... \[-\-include="*FilePattern*"] \[-\-exclude="*FilePattern*"] *PatchFile*
+:   apply hunks only to specific files based on the include/exclude filename patterns
+
+`filterdiff ...`
+:   External command that let's you specific hunks for a patchfile
+
+
