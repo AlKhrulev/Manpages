@@ -79,8 +79,85 @@ For each conflicting file, the makers will be added automatically. Then
 `git add --patch`
 :   essentially a shortcut to `git add -i`->`patch`
 
+git commit -\-squash *COMMIT*
+:   indicate that you want to squash a commit for `rebase --autosquash`. Use commit, but meld into previous commit. I.e. in this case both commit messages are combined ('melded'), one after the other, and offered to the user's editor, so that they can be amalgamated/fused together as desired by the user.
+
+git commit -\-fixit *COMMIT*
+:   indicate that you want to squash a commit for `rebase --autosquash`. Like "squash", but discard this commit's log message(in favour of *COMMIT* one's). I.e. the original commit message is kept, unchanged, and any text within the fixup commit message is ignored (unceremoniously dumped).
+
 `git commit --amend [--no-edit]`
 :   Add files to the previous commit and optionally keep the same msg
+
+## Modifying Commit History
+
+### Rebase vs Interactive Rebase
+
+Taken from [this question](https://stackoverflow.com/questions/49626717/what-is-the-difference-between-interactive-rebase-and-normal-rebase)
+
+**Rebase**
+:   Does not take any user input so it picks all the commit from the branch without any amendment and applies all of it.
+
+**Interactive Rebase**
+:   It opens the editor in front of you so that we can do any kind of amendment for each commits in whatever way we want. Example:
+
+```{bash}
+
+pick <commit_hash> <commit_message>
+pick 42522f0 add stack implementation
+
+# Rebase 6aa416b..42522f0 onto 6aa416b (1 command)
+#
+# Commands:
+# p, pick <commit> = use commit
+# r, reword <commit> = use commit, but edit the commit message
+# e, edit <commit> = use commit, but stop for amending
+# s, squash <commit> = use commit, but meld into previous commit
+# f, fixup <commit> = like "squash", but discard this commit's log message
+# x, exec <command> = run command (the rest of the line) using shell
+# b, break = stop here (continue rebase later with 'git rebase --continue')
+# d, drop <commit> = remove commit
+# l, label <label> = label current HEAD with a name
+# t, reset <label> = reset HEAD to a label
+# m, merge [-C <commit> | -c <commit>] <label> [# <oneline>]
+# .       create a merge commit using the original merge commit's
+# .       message (or the oneline, if no original merge commit was
+# .       specified). Use -c <commit> to reword the commit message.
+#
+# These lines can be re-ordered; they are executed from top to bottom.
+#
+# If you remove a line here THAT COMMIT WILL BE LOST.
+#
+# However, if you remove everything, the rebase will be aborted.
+```
+
+### Commands
+
+`git rebase ... --autosquash`
+:   Take advantage of *squash* or *fixit* commits done before for autosquashing
+
+git rebase \[-i] *BranchName*
+:   Apply all commits from the current branch onto *BranchName*. When you rebase a branch, you are essentially replaying all the commits of the branch onto another base commit or branch.(ex. **git checkout feature-branch && git rebase main**)
+
+git rebase \[-i] *CommitRange*
+:   Rebase a range of commits(ex. **git rebase -i HEAD~5**)
+
+git rebase \[-i] *BaseCommitSHA*
+:   Rebase all commits **after**  *BaseCommit* up to the current HEAD
+
+git rebase ... --\exec "*COMMAND*"
+:   execute command after each line that created a commit in final history. If *COMMAND* fails, rebase fails as well. Useful to test intermediate commits(ex. **--exec "make build && make run"** to check if everything builds correctly)
+
+git (add|rm) *FileWithConflict*...
+:   Mark conflicts as resolved(edit Conflict markers in *FileWithConflict* first)
+
+`git rebase --continue`
+:   Use after fixing the conflict to continue the process
+
+`git rebase --abort`
+:   Terminate rebase and return to the state before it has started
+
+`git push --force`
+:   Push updated history to remote
 
 ## Displaying Files and Differences
 
