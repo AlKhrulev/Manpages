@@ -159,6 +159,15 @@ git (add|rm) *FileWithConflict*...
 `git push --force`
 :   Push updated history to remote
 
+`git rebase --signoff ...`
+:   to add **Signed-off-by** footers to a range of commits
+
+git rebase --exec "git commit --amend --no-edit -n -S" -i *GitRevision*
+:   sign older commits via rebasing
+
+`git fetch && git reset origin/main --soft`
+:   Update commit history locally after remote branch(here *origin/main*) was force pushed but leave files intact
+
 ## Displaying Files and Differences
 
 ### Viewing Commit Logs
@@ -168,6 +177,9 @@ git (add|rm) *FileWithConflict*...
 
 `git log (--name-only|--name-status) --oneline ...`
 :   Same as above but print only 1 line of commit message and not the whole thing
+
+`git log -p ...`
+:   Display commit content as well
 
 ### Viewing Files
 
@@ -230,5 +242,3 @@ git apply ... \[-\-include="*FilePattern*"] \[-\-exclude="*FilePattern*"] *Patch
 
 `filterdiff ...`
 :   External command that let's you specific hunks for a patchfile
-
-
