@@ -10,7 +10,7 @@ A custom man page for **GNU tar**
 
 ## UNIX-Style Usage
 
-```{bash}
+```
 tar -c [-f ARCHIVE] [OPTIONS] [FILE...]
 tar -d [-f ARCHIVE] [OPTIONS] [FILE...]
 tar -r [-f ARCHIVE] [OPTIONS] [FILE...]
@@ -61,7 +61,7 @@ A collection of useful Tar commands
 Any option below with *COMPRESSOR*/*EXT* values can be substituted
 with the following:
 
-```{bash}
+```
 zstd->.zst->unzstd/(zstd -d)
 xz->.xz->unxz/(xz -d)
 bzip2->.bz2->bunzip2/(bzip2 -d)
@@ -89,6 +89,20 @@ tar -\-*COMPRESSOR* \[*FOLDER*...] \[*FILE*...] -cvf *ARCHIVE*.tar.*EXT*
 
 `tar -czvf archive.tar.gz -C Manpages LICENSE -C ~/Downloads/sample_folder README.md`
 :   **chdir** to **Manpages** and **tar LICENSE**, then **chdir** to **~/Downloads/sample_folder** and **tar README** and then create an archive in the initial working directory
+
+tar -acf **ArhiveName.tar.ext** -C **FolderName** .
+:   Compress all files in **FolderName**
+
+Say `~/Downloads/sample_folder` has files f1, f2, inner/f3.
+
+`tar -czvf archive.tar.gz -C ~/Downloads/sample_folder .`
+:   Adds f1, f2, inner/f3 to `archive.tar.gz`
+
+`tar -czvf archive.tar.gz -C ~/Downloads/sample_folder *`
+:   Works incorrectly cause * gets expanded before chdir!!!
+
+`tar -czvf archive.tar.gz ~/Downloads/sample_folder`
+:   Preserves paths and archives ~/Downloads/sample_folder/{f1,f2,inner/f3}
 
 ## Decompress(eXtract)
 
