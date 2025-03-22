@@ -88,6 +88,12 @@ git commit -\-fixit *COMMIT*
 `git commit --amend [--no-edit]`
 :   Add files to the previous commit and optionally keep the same msg
 
+git commit --template *FileName*
+:   Use text from *FileName* to start from
+
+git commit --file *FileName*
+:   Use text from *FileName* as a commit message
+
 ## Modifying Commit History
 
 ### Rebase vs Interactive Rebase
@@ -131,6 +137,9 @@ pick 42522f0 add stack implementation
 ```
 
 ### Commands
+
+git rebase *CommitHash*^
+:   rebase from *CommitHash*(inclusive). Typically what you want
 
 `git rebase ... --autosquash`
 :   Take advantage of *squash* or *fixit* commits done before for autosquashing
@@ -180,6 +189,15 @@ git rebase --exec "git commit --amend --no-edit -n -S" -i *GitRevision*
 
 `git log -p ...`
 :   Display commit content as well
+
+`git log --stat ...`
+:   Add summary of file modifications
+
+`git log --show-signature ...`
+:   Show GPG signature of commits
+
+`git log --abbrev-commit ...`
+:   Use shortened commit SHA instead of a full one
 
 ### Viewing Files
 
@@ -242,3 +260,38 @@ git apply ... \[-\-include="*FilePattern*"] \[-\-exclude="*FilePattern*"] *Patch
 
 `filterdiff ...`
 :   External command that let's you specific hunks for a patchfile
+
+## Tags
+
+Tag references are added to `refs/tags/`
+
+### Commands
+
+`git [-l] tag`
+:   List all tags
+
+git tag *TagName* \[*Commit*]
+:   Add a tag pointing to *Commit*(`HEAD` by default)
+
+git tag -a *TagName* ...
+:   Add annotated(i.e. with a message) tag
+
+git tag -v *TagName*
+:   Output *TagName* message, author, signature
+
+git tag -f *TagName* ...
+:   Replace (existing) *TagName* instead of failing
+
+git push *RemoteName* *TagName*
+:   Push commit to remote. Ex. `git push origin v1.0.0`
+
+git show *TagName*
+:   Display tag info + message(if annotated)
+
+git show-ref --tags *TagName*
+:   Show what commit *TagName* points to
+
+## Verifying Objects
+
+git verify-(commit|tag|pack) *Object*
+:   Print `only signatures` of a particular object type(Commit/Tag/Packfile)
