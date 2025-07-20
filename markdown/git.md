@@ -71,6 +71,43 @@ For each conflicting file, the makers will be added automatically. Then
 
 # Terminal Command Examples
 
+## Displaying Info
+
+`git rev-parse [--short] HEAD`
+:   print commit SHA [short] of HEAD
+
+`git rev-parse [--short] FETCH_HEAD`
+:   print commit SHA [short] of FETCH\_HEAD
+
+git show-branch *BranchName*
+:   print HEAD of *BranchName*
+
+## Modifying file state
+
+git checkout=git restore + git switch
+
+git checkout -- *FileName*
+:   identical to `git restore --staged --worktree`
+
+git reset -- *FileName*
+:   identical to `git restore --staged --`
+
+git restore --staged -- *FileName*
+:   unstage file but keep it unchanges(restore index)
+
+git restore [--worktree] -- *FileName*
+:   overwrites *FileName* in your working copy with the contents in your index. Works only if file is not staged!!
+
+git restore --worktree --staged -- *FileName*
+:   unstage *FileName* and set it to the state in HEAD
+
+git restore --source=HEAD --staged --worktree *FileName*
+:   outdated way to do the previous command, HEAD had to be explicit(now, we default to HEAD when combining --staged and --worktree)
+
+`git restore -p ...`
+:   restore selected parts...
+
+
 ## Working with Commits
 
 `git add -i`
@@ -135,6 +172,14 @@ pick 42522f0 add stack implementation
 #
 # However, if you remove everything, the rebase will be aborted.
 ```
+
+### Squashing
+
+You squash later commits into earlier ones!
+
+`A->B->C, C=HEAD`
+:   Can squash C->B, B->A, not reverse.
+
 
 ### Commands
 
@@ -213,6 +258,11 @@ git rebase --exec "git commit --amend --no-edit -n -S" -i *GitRevision*
 `git diff --ignore-space-at-eol ...`
 :   Ignore only EOL space diffs(i.e. trailing spaces)
 
+### Determining Who Made Changes
+
+git blame -L 1,2 -L 8,11 \[-L ...\]
+:   Find who made the changes for multiple lines
+
 ## Working with Remotes
 
 git remote add *Name* *URL*.git
@@ -230,6 +280,9 @@ git remote (rm|show) *ExistingName*
 
 git fetch \[*Remote*]/git push \[*Remote*] \[*Branch*]
 :   Git implicitly inserts the remote info into your commands. Ex. **git fetch \[origin]**/**git push \[origin] \[current_branch]**
+
+`git branch -vv`
+:   Display all branches alongside their remote counterparts
 
 ### Delete Local Branch
 
@@ -295,3 +348,40 @@ git show-ref --tags *TagName*
 
 git verify-(commit|tag|pack) *Object*
 :   Print `only signatures` of a particular object type(Commit/Tag/Packfile)
+
+## Going Into Internals
+
+### Definitions
+
+.git/index
+:   a binary file containing index
+
+*Reference(Ref)*
+:   A pointer to a commit graph. View via *git reflog*
+
+### Commands to Help with Viewing Internals
+
+git show-branch *BranchName*
+:   Get the commit description for the HEAD of *BranchName*
+
+git rev-list *Ref*
+:   show all commits from HEAD to *Ref*(goes down!)
+
+git log *Ref*
+:   show all commits from *Ref* to HEAD(goes up!)
+
+git rev-parse *Ref*
+:   Get the commit SHA for *Ref*(branch name, HEAD, tag, etc.)
+
+git name-rev *Commit*
+:   Get *Ref* for the required *Commit*
+
+git cat-file -t *SHA*
+:   Return *SHA* type(commit/tree/blob)
+
+git cat-file -p *SHA*
+:   Print the content of a blob or tree object with *SHA*. Blobs are stored in *.git/objects*(if unpacked) or *.git/packed/\*.pack* file if packed
+
+git verify-pack -v *Pack*
+:   View pack file content
+
