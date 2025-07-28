@@ -137,11 +137,13 @@ git commit --file *FileName*
 
 Taken from [this question](https://stackoverflow.com/questions/49626717/what-is-the-difference-between-interactive-rebase-and-normal-rebase)
 
+You `rebase ONTO some BASE`. As a result, **the base itself is not included into rebasing**! Therefore, to include it optionally you have to go `BASE^`
+
 **Rebase**
 :   Does not take any user input so it picks all the commit from the branch without any amendment and applies all of it.
 
 **Interactive Rebase**
-:   It opens the editor in front of you so that we can do any kind of amendment for each commits in whatever way we want. Example:
+:   It opens the editor in front of you so that we can do any kind of amendment for each commits in whatever way we want. The oldest commits are at the bottom, while the earliest ones are at the top! Example:
 
 ```{bash}
 
@@ -175,16 +177,30 @@ pick 42522f0 add stack implementation
 
 ### Squashing
 
-You squash later commits into earlier ones!
+squashing
+:    gives you the opportunity to use commit's message as part of a `pick` or `reword` commit message(the target)
+
+fixup
+:   disregard the message of source commit and simply use the target's one
 
 `A->B->C, C=HEAD`
-:   Can squash C->B, B->A, not reverse.
+:   Can squash C->B, B->A, not reverse.ß
 
 
 ### Commands
 
+git rebase *TARGET*
+:   integrate all changes that are not in *TARGET* from the current HEAD into *TARGET*(i.e. commits from `git log TARGET..HEAD`)
+
 git rebase *CommitHash*^
 :   rebase from *CommitHash*(inclusive). Typically what you want
+
+git rebase *TARGET* *SOURCE*
+:   See below for an example. This is essentially the same as `git checkout SOURCE && git rebase TARGET`
+
+`git rebase -i origin/develop HEAD`
+:   "rebase my current branch (*HEAD*) onto *origin/develop*".
+    I.e. "show me all the commits that are in HEAD but not in origin/develop (i.e. origin/develop..HEAD), so I can reorder/squash/pick them."
 
 `git rebase ... --autosquash`
 :   Take advantage of *squash* or *fixit* commits done before for autosquashing
@@ -260,6 +276,11 @@ git rebase --exec "git commit --amend --no-edit -n -S" -i *GitRevision*
 
 ### Determining Who Made Changes
 
+`git blame` by default only shows the *final* revision that modified each line. To see the *entire* history, you need to specify a range that encompasses the *single* line you're interested in.
+
+git blame -L 34,34 *fileName*
+:   get all revisions for a particular file line
+
 git blame -L 1,2 -L 8,11 \[-L ...\]
 :   Find who made the changes for multiple lines
 
@@ -283,6 +304,15 @@ git fetch \[*Remote*]/git push \[*Remote*] \[*Branch*]
 
 `git branch -vv`
 :   Display all branches alongside their remote counterparts
+
+`git checkout -b new_branch && git push --set-upstream origin new_branch`
+:   Set tracking for git branch to a new branch that doesn't exist on remote
+
+`git worktree add ../manifest origin/develop -b update-security-manifest`
+:   Add a new tree based on `origin/develop` and create a new branch called `update-security-manifest`. Use the command above to change tracking to a completely new branch!
+
+`git worktree add ../manifest origin/develop && git push origin HEAD:update-security-manifest-to-1.2`
+:   Use this form if the branch already exists, so you need to simply track it
 
 ### Delete Local Branch
 
