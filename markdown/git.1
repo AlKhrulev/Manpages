@@ -1,0 +1,389 @@
+.SH NAME
+A custom man page for \f[B]git\f[R]
+.SH SYNOPSIS
+.SH DESCRIPTION
+A collection of useful git commands
+.SH COMMON OPTIONS
+.SH REVISION TYPES
+https://git\-scm.com/docs/gitrevisions
+.SH Conflicts
+.SS Markers
+.TP
+Conflict Markers
+\f[CR]<<<<<<<\f[R], \f[CR]=======\f[R], and \f[CR]>>>>>>>\f[R]
+.TP
+Changes made in the current branch
+between \f[CR]<<<<<<<\f[R] HEAD and \f[CR]=======\f[R]
+.TP
+Changes from the incoming branch
+between \f[CR]=======\f[R] and \f[CR]>>>>>>>\f[R] incoming_branch.
+.TP
+Common ancestor for both commits(displayed only in \f[CR]diff3\f[R] style)
+between \f[CR]|||||||\f[R] and \f[CR]>>>>>>>\f[R](i.e.\ current and
+incoming branches)
+.SS Examples
+.SS \f[B]Merge\f[R] style
+Supports only 2 file diff, so that\(cqs what shown
+.PP
+\f[CR]{bash} <<<<<<< HEAD THIS IS USEFUL ======= This is really useful >>>>>>> c2392943.....\f[R]
+.SS \f[B]Diff3\f[R] style*(supports 3\-file diffs)
+\f[CR]{bash} <<<<<<< HEAD THIS IS USEFUL ||||||| merged common ancestors This is useful ======= This is really useful >>>>>>> c2392943.....\f[R]
+.SS Process
+For each conflicting file, the makers will be added automatically.
+Then
+.IP "1." 3
+Decide which changes to keep, modify, or discard.
+.IP "2." 3
+Remove all conflict markers from the file
+.IP "3." 3
+Run \f[B]git add \f[BI]Filename\f[B]\f[R]
+.IP "4." 3
+Commit the changes
+.SH Terminal Command Examples
+.SS Displaying Info
+.TP
+\f[CR]git rev\-parse [\-\-short] HEAD\f[R]
+print commit SHA [short] of HEAD
+.TP
+\f[CR]git rev\-parse [\-\-short] FETCH_HEAD\f[R]
+print commit SHA [short] of FETCH_HEAD
+.TP
+git show\-branch \f[I]BranchName\f[R]
+print HEAD of \f[I]BranchName\f[R]
+.SS Modifying file state
+git checkout=git restore + git switch
+.TP
+git checkout \(en \f[I]FileName\f[R]
+identical to \f[CR]git restore \-\-staged \-\-worktree\f[R]
+.TP
+git reset \(en \f[I]FileName\f[R]
+identical to \f[CR]git restore \-\-staged \-\-\f[R]
+.TP
+git restore \(enstaged \(en \f[I]FileName\f[R]
+unstage file but keep it unchanges(restore index)
+.TP
+git restore [\(enworktree] \(en \f[I]FileName\f[R]
+overwrites \f[I]FileName\f[R] in your working copy with the contents in
+your index.
+Works only if file is not staged!!
+.TP
+git restore \(enworktree \(enstaged \(en \f[I]FileName\f[R]
+unstage \f[I]FileName\f[R] and set it to the state in HEAD
+.TP
+git restore \(ensource=HEAD \(enstaged \(enworktree \f[I]FileName\f[R]
+outdated way to do the previous command, HEAD had to be explicit(now, we
+default to HEAD when combining \(enstaged and \(enworktree)
+.TP
+\f[CR]git restore \-p ...\f[R]
+restore selected parts\&...
+.SS Working with Commits
+.TP
+\f[CR]git add \-i\f[R]
+enable interactive mode.
+See \f[CR]man git\-add\f[R]\->\f[CR]INTERACTIVE MODE\f[R] for more info
+.TP
+\f[CR]git add \-\-patch\f[R]
+essentially a shortcut to \f[CR]git add \-i\f[R]\->\f[CR]patch\f[R]
+.TP
+git commit \-\-squash \f[I]COMMIT\f[R]
+indicate that you want to squash a commit for
+\f[CR]rebase \-\-autosquash\f[R].
+Use commit, but meld into previous commit.
+I.e.
+in this case both commit messages are combined (`melded'), one after the
+other, and offered to the user\(cqs editor, so that they can be
+amalgamated/fused together as desired by the user.
+.TP
+git commit \-\-fixit \f[I]COMMIT\f[R]
+indicate that you want to squash a commit for
+\f[CR]rebase \-\-autosquash\f[R].
+Like \(lqsquash\(rq, but discard this commit\(cqs log message(in favour
+of \f[I]COMMIT\f[R] one\(cqs).
+I.e.
+the original commit message is kept, unchanged, and any text within the
+fixup commit message is ignored (unceremoniously dumped).
+.TP
+\f[CR]git commit \-\-amend [\-\-no\-edit]\f[R]
+Add files to the previous commit and optionally keep the same msg
+.TP
+git commit \(entemplate \f[I]FileName\f[R]
+Use text from \f[I]FileName\f[R] to start from
+.TP
+git commit \(enfile \f[I]FileName\f[R]
+Use text from \f[I]FileName\f[R] as a commit message
+.SS Modifying Commit History
+.SS Rebase vs Interactive Rebase
+Taken from \c
+.UR https://stackoverflow.com/questions/49626717/what-is-the-difference-between-interactive-rebase-and-normal-rebase
+this question
+.UE \c
+.TP
+\f[B]Rebase\f[R]
+Does not take any user input so it picks all the commit from the branch
+without any amendment and applies all of it.
+.TP
+\f[B]Interactive Rebase\f[R]
+It opens the editor in front of you so that we can do any kind of
+amendment for each commits in whatever way we want.
+Example:
+.PP
+\(ga\(ga\(ga{bash}
+.PP
+pick   pick 42522f0 add stack implementation
+.SH Rebase 6aa416b..42522f0 onto 6aa416b (1 command)
+.SH 
+.SH Commands:
+.SH p, pick  = use commit
+.SH r, reword  = use commit, but edit the commit message
+.SH e, edit  = use commit, but stop for amending
+.SH s, squash  = use commit, but meld into previous commit
+.SH f, fixup  = like \(lqsquash\(rq, but discard this commit\(cqs log message
+.SH x, exec  = run command (the rest of the line) using shell
+.SH b, break = stop here (continue rebase later with `git rebase \(encontinue')
+.SH d, drop  = remove commit
+.SH l, label  = label current HEAD with a name
+.SH t, reset  = reset HEAD to a label
+.SH m, merge [\-C  | \-c ]  [# ]
+.SH . create a merge commit using the original merge commit\(cqs
+.SH . message (or the oneline, if no original merge commit was
+.SH . specified). Use \-c  to reword the commit message.
+.SH 
+.SH These lines can be re\-ordered; they are executed from top to bottom.
+.SH 
+.SH If you remove a line here THAT COMMIT WILL BE LOST.
+.SH 
+.SH However, if you remove everything, the rebase will be aborted.
+\(ga\(ga\(ga
+.SS Squashing
+You squash later commits into earlier ones!
+.TP
+\f[CR]A\->B\->C, C=HEAD\f[R]
+Can squash C\->B, B\->A, not reverse.
+.SS Commands
+.TP
+git rebase \f[I]CommitHash\f[R]\(ha
+rebase from \f[I]CommitHash\f[R](inclusive).
+Typically what you want
+.TP
+\f[CR]git rebase ... \-\-autosquash\f[R]
+Take advantage of \f[I]squash\f[R] or \f[I]fixit\f[R] commits done
+before for autosquashing
+.TP
+git rebase [\-i] \f[I]BranchName\f[R]
+Apply all commits from the current branch onto \f[I]BranchName\f[R].
+When you rebase a branch, you are essentially replaying all the commits
+of the branch onto another base commit or branch.(ex.
+\f[B]git checkout feature\-branch && git rebase main\f[R])
+.TP
+git rebase [\-i] \f[I]CommitRange\f[R]
+Rebase a range of commits(ex.
+\f[B]git rebase \-i HEAD\(ti5\f[R])
+.TP
+git rebase [\-i] \f[I]BaseCommitSHA\f[R]
+Rebase all commits \f[B]after\f[R] \f[I]BaseCommit\f[R] up to the
+current HEAD
+.TP
+git rebase \&... \(en\(lq\f[I]COMMAND\f[R]\(rq
+execute command after each line that created a commit in final history.
+If \f[I]COMMAND\f[R] fails, rebase fails as well.
+Useful to test intermediate commits(ex.
+\f[B]\(enexec \(lqmake build && make run\(rq\f[R] to check if everything
+builds correctly)
+.TP
+git (add|rm) \f[I]FileWithConflict\f[R]\&...
+Mark conflicts as resolved(edit Conflict markers in
+\f[I]FileWithConflict\f[R] first)
+.TP
+\f[CR]git rebase \-\-continue\f[R]
+Use after fixing the conflict to continue the process
+.TP
+\f[CR]git rebase \-\-abort\f[R]
+Terminate rebase and return to the state before it has started
+.TP
+\f[CR]git push \-\-force\f[R]
+Push updated history to remote
+.TP
+\f[CR]git rebase \-\-signoff ...\f[R]
+to add \f[B]Signed\-off\-by\f[R] footers to a range of commits
+.TP
+git rebase \(enexec \(lqgit commit \(enamend \(enno\-edit \-n \-S\(rq \-i \f[I]GitRevision\f[R]
+sign older commits via rebasing
+.TP
+\f[CR]git fetch && git reset origin/main \-\-soft\f[R]
+Update commit history locally after remote branch(here
+\f[I]origin/main\f[R]) was force pushed but leave files intact
+.SS Displaying Files and Differences
+.SS Viewing Commit Logs
+.TP
+\f[CR]git log (\-\-name\-only|\-\-name\-status) ...\f[R]
+don\(cqt list file changes in detail and only specify their names
+.TP
+\f[CR]git log (\-\-name\-only|\-\-name\-status) \-\-oneline ...\f[R]
+Same as above but print only 1 line of commit message and not the whole
+thing
+.TP
+\f[CR]git log \-p ...\f[R]
+Display commit content as well
+.TP
+\f[CR]git log \-\-stat ...\f[R]
+Add summary of file modifications
+.TP
+\f[CR]git log \-\-show\-signature ...\f[R]
+Show GPG signature of commits
+.TP
+\f[CR]git log \-\-abbrev\-commit ...\f[R]
+Use shortened commit SHA instead of a full one
+.SS Viewing Files
+.TP
+\f[CR]git show\f[R] [[\f[I]Rev\f[R]]:[\f[I]Object\f[R]]\&...]
+Show the state of repo(or specific objects) at a particular
+\f[I]Rev\f[R](\f[B]HEAD\f[R] by default).
+Uses a pager by default but can be redirected into a file.
+Ex.
+\f[B]git show HEAD:LICENSE HEAD\(ha1:README.md > file\f[R]
+.TP
+\f[CR]git diff\f[R] [\f[I]Rev1\f[R]]:[\f[I]Object1\f[R]] [\f[I]Rev2\f[R]]:[\f[I]Object2\f[R]]
+Ex.
+compare 2 files \f[B]git diff HEAD\(ha1:README.md HEAD:README.md\f[R] or
+two branches \f[B]git diff develop main\f[R]
+.TP
+\f[CR]git diff (\-w|\-\-ignore\-all\-space) ...\f[R]
+Ignore whitespaces both at EOL and inside of the text
+.TP
+\f[CR]git diff \-\-ignore\-space\-at\-eol ...\f[R]
+Ignore only EOL space diffs(i.e.\ trailing spaces)
+.SS Determining Who Made Changes
+.TP
+git blame \-L 1,2 \-L 8,11 [\-L \&...]
+Find who made the changes for multiple lines
+.SS Working with Remotes
+.TP
+git remote add \f[I]Name\f[R] \f[I]URL\f[R].git
+add a new remote with a name.
+Ex.
+\f[B]git remote add origin https://github.com/OWNER/REPOSITORY.git\f[R]
+.TP
+git remote set\-url \f[I]ExistingName\f[R] \f[I]URL\f[R].git
+Update remote\(cqs url
+.TP
+\f[CR]git remote \-v\f[R]
+List all remotes
+.PP
+git remote rename \f[I]ExistingName\f[R] \f[I]NewName\f[R]
+.PP
+git remote (rm|show) \f[I]ExistingName\f[R]
+.TP
+git fetch [\f[I]Remote\f[R]]/git push [\f[I]Remote\f[R]] [\f[I]Branch\f[R]]
+Git implicitly inserts the remote info into your commands.
+Ex.
+\f[B]git fetch [origin]\f[R]/\f[B]git push [origin]
+[current_branch]\f[R]
+.TP
+\f[CR]git branch \-vv\f[R]
+Display all branches alongside their remote counterparts
+.SS Delete Local Branch
+.TP
+git branch \-d \f[I]LocalBranchName\f[R]\&...
+Delete fully merged branches(fails otherwise)
+.TP
+git branch \-D \f[I]LocalBranchName\f[R] \&...
+Alias to \f[CR]git branch \-d \-\-force\f[R].
+That is, delete a branch without checking that it has been merged
+.SS Delete Remote Branch
+.TP
+git push \-d \f[I]RemoteName\f[R] \f[I]RemoteBranchName\f[R]
+Delete a remote branch.
+\f[I]RemoteName\f[R] is typically \f[B]origin\f[R]
+.TP
+git push \f[I]RemoteName\f[R] :\f[I]RemoteBranchName\f[R]
+Delete a remote branch.
+Note there\(cqs a space in\-between \f[I]RemoteName\f[R] and a colon.
+Ex.
+\f[B]git push origin :serverfix\f[R]
+.TP
+\f[CR]git fetch \-\-all \-\-prune\f[R]
+Fetch the data from all remotes(\f[B]\-\-all\f[R]) and automatically
+remove remote branches that don\(cqt have a local counterpart.
+I.e.
+you will first need to manually remove local branches as well before
+pruning remotes on your machine.
+.TP
+git apply \&... \f[I]PatchFile\f[R]
+Apply a \f[I]PatchFile\f[R] to the current repo
+.TP
+git apply \&... [\-\-include=\(lq\f[I]FilePattern\f[R]\(rq] [\-\-exclude=\(lq\f[I]FilePattern\f[R]\(rq] \f[I]PatchFile\f[R]
+apply hunks only to specific files based on the include/exclude filename
+patterns
+.TP
+\f[CR]filterdiff ...\f[R]
+External command that let\(cqs you specific hunks for a patchfile
+.SS Tags
+Tag references are added to \f[CR]refs/tags/\f[R]
+.SS Commands
+.TP
+\f[CR]git [\-l] tag\f[R]
+List all tags
+.TP
+git tag \f[I]TagName\f[R] [\f[I]Commit\f[R]]
+Add a tag pointing to \f[I]Commit\f[R](\f[CR]HEAD\f[R] by default)
+.TP
+git tag \-a \f[I]TagName\f[R] \&...
+Add annotated(i.e.\ with a message) tag
+.TP
+git tag \-v \f[I]TagName\f[R]
+Output \f[I]TagName\f[R] message, author, signature
+.TP
+git tag \-f \f[I]TagName\f[R] \&...
+Replace (existing) \f[I]TagName\f[R] instead of failing
+.TP
+git push \f[I]RemoteName\f[R] \f[I]TagName\f[R]
+Push commit to remote.
+Ex.
+\f[CR]git push origin v1.0.0\f[R]
+.TP
+git show \f[I]TagName\f[R]
+Display tag info + message(if annotated)
+.TP
+git show\-ref \(entags \f[I]TagName\f[R]
+Show what commit \f[I]TagName\f[R] points to
+.SS Verifying Objects
+.TP
+git verify\-(commit|tag|pack) \f[I]Object\f[R]
+Print \f[CR]only signatures\f[R] of a particular object
+type(Commit/Tag/Packfile)
+.SS Going Into Internals
+.SS Definitions
+.TP
+\&.git/index
+a binary file containing index
+.TP
+\f[I]Reference(Ref)\f[R]
+A pointer to a commit graph.
+View via \f[I]git reflog\f[R]
+.SS Commands to Help with Viewing Internals
+.TP
+git show\-branch \f[I]BranchName\f[R]
+Get the commit description for the HEAD of \f[I]BranchName\f[R]
+.TP
+git rev\-list \f[I]Ref\f[R]
+show all commits from HEAD to \f[I]Ref\f[R](goes down!)
+.TP
+git log \f[I]Ref\f[R]
+show all commits from \f[I]Ref\f[R] to HEAD(goes up!)
+.TP
+git rev\-parse \f[I]Ref\f[R]
+Get the commit SHA for \f[I]Ref\f[R](branch name, HEAD, tag, etc.)
+.TP
+git name\-rev \f[I]Commit\f[R]
+Get \f[I]Ref\f[R] for the required \f[I]Commit\f[R]
+.TP
+git cat\-file \-t \f[I]SHA\f[R]
+Return \f[I]SHA\f[R] type(commit/tree/blob)
+.TP
+git cat\-file \-p \f[I]SHA\f[R]
+Print the content of a blob or tree object with \f[I]SHA\f[R].
+Blobs are stored in \f[I].git/objects\f[R](if unpacked) or
+\f[I].git/packed/*.pack\f[R] file if packed
+.TP
+git verify\-pack \-v \f[I]Pack\f[R]
+View pack file content
