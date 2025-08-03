@@ -145,6 +145,10 @@ You `rebase ONTO some BASE`. As a result, **the base itself is not included into
 **Interactive Rebase**
 :   It opens the editor in front of you so that we can do any kind of amendment for each commits in whatever way we want. The oldest commits are at the bottom, while the earliest ones are at the top! Example:
 
+**TODO**
+: Interactive rebase todo = all commits on your branch since the merge-base that aren’t in upstream.
+Upstream-only commits (like your D) are not shown or replayed.
+
 ```{bash}
 
 pick <commit_hash> <commit_message>
@@ -186,17 +190,16 @@ fixup
 `A->B->C, C=HEAD`
 :   Can squash C->B, B->A, not reverse.ß
 
-
 ### Commands
 
-git rebase *TARGET*
-:   integrate all changes that are not in *TARGET* from the current HEAD into *TARGET*(i.e. commits from `git log TARGET..HEAD`)
+git rebase *UPSTREAM*
+:   integrate all changes that are not in *UPSTREAM* but in HEAD into *UPSTREAM*(i.e. commits from `git log UPSTREAM..HEAD`)
 
 git rebase *CommitHash*^
 :   rebase from *CommitHash*(inclusive). Typically what you want
 
-git rebase *TARGET* *SOURCE*
-:   See below for an example. This is essentially the same as `git checkout SOURCE && git rebase TARGET`
+git rebase *UPSTREAM* *BRANCH*
+:   See below for an example. This is essentially the same as `git checkout BRANCH && git rebase UPSTREAM`
 
 `git rebase -i origin/develop HEAD`
 :   "rebase my current branch (*HEAD*) onto *origin/develop*".
@@ -235,12 +238,21 @@ git (add|rm) *FileWithConflict*...
 git rebase --exec "git commit --amend --no-edit -n -S" -i *GitRevision*
 :   sign older commits via rebasing
 
+git merge-base --is-ancestor *A* *B*
+:    Is commit *A* an ancestor of commit *B*? If yes (exit code 0), then a fast-forward merge from *A* to *B* is possible.
+
+`git merge-base --is-ancestor origin/develop HEAD`
+:   Ex. of the one above. Returns 0 => we can fast-forward *origin/develop* to *HEAD*
+
 `git fetch && git reset origin/main --soft`
 :   Update commit history locally after remote branch(here *origin/main*) was force pushed but leave files intact
 
 ## Displaying Files and Differences
 
 ### Viewing Commit Logs
+
+git log *A*..*B*
+:   Same as B\A(all commits in *B* but not in *A*)
 
 `git log (--name-only|--name-status) ...`
 :   don't list file changes in detail and only specify their names
@@ -260,10 +272,35 @@ git rebase --exec "git commit --amend --no-edit -n -S" -i *GitRevision*
 `git log --abbrev-commit ...`
 :   Use shortened commit SHA instead of a full one
 
+git log --author="*email@example.com*"
+:   Display commits authored by a specific person
+
+`git shortlog -s ...`
+:   Get commit counts only.
+
 ### Viewing Files
 
 `git show` \[\[*Rev*]:\[*Object*]...]
 :   Show the state of repo(or specific objects) at a particular *Rev*(**HEAD** by default). Uses a pager by default but can be redirected into a file. Ex. **git show HEAD:LICENSE HEAD^1:README.md > file**
+
+`git diff -- a b`
+:   `a` is considered the **source** file, and `b` is the **target** file.
+Think of it as comparing `a` *to* `b`, and the output shows you how to transform `a` into `b`.
+
+`git diff HEAD origin/develop  -- . ':(exclude)*.ipynb'`
+:   Compare 2 branches but exclude Jupyter notebook files. Note that `.` implies the starting point, not just the
+current directory. Therefore, it makes sense to be in the root worktree folder.
+
+`git diff HEAD origin/develop -- ':!*.ipynb' ':!*.py'`
+:   Alternative syntax to above and also displays how to exclude multiple files. Specifically,
+**':!\*.ipynb'** is a pathspec that excludes **.ipynb** files. Let's break it down
+**\:** -> Indicates a pathspec.
+**!** -> Negates the pathspec.  This means "exclude".
+**.ipynb**-> A glob pattern that matches all files ending in **.ipynb**, etc.
+
+`*.ipynb  diff=false\n*.py     diff=false`
+: Achieves the same as above permanently if added to **.gitattributes** files that has been committed.
+Obviously substitute a newline char with an actual newline.
 
 `git diff` \[*Rev1*]:\[*Object1*] \[*Rev2*]:\[*Object2*]
 :   Ex. compare 2 files **git diff HEAD^1:README.md HEAD:README.md** or two branches **git diff develop main**
@@ -415,3 +452,7 @@ git cat-file -p *SHA*
 git verify-pack -v *Pack*
 :   View pack file content
 
+### TODO
+
+git branch *Name* *Revision*
+:   Create a new branch without switching to it(compared to **checkout** or **switch**)
