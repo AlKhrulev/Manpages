@@ -107,7 +107,6 @@ git restore --source=HEAD --staged --worktree *FileName*
 `git restore -p ...`
 :   restore selected parts...
 
-
 ## Working with Commits
 
 `git add -i`
@@ -130,6 +129,18 @@ git commit --template *FileName*
 
 git commit --file *FileName*
 :   Use text from *FileName* as a commit message
+
+### Different Flavours of `git reset ... Commit`
+
++-----------+--------------+---------+-----------+-------------------------------------------------------------+
+| Mode      | Undo commit? | Unstage? | Wipe work?| Use for                                                     |
++-----------+--------------+---------+-----------+-------------------------------------------------------------+
+| --soft    | Yes          | No       | No        | I want to tweak that commit, but keep everything staged.    |
+| --mixed   | Yes          | Yes      | No        | I need to re-select which changes to commit.                |
+| (default) | Yes          | Yes      | No        | Same as --mixed.                                            |
+| --hard    | Yes          | Yes      | Yes       | Blow away all local edits—start fresh from this commit.     |
+| --merge   | Yes          | Yes      | Selective | Abort this merge (or rollback) but keep my unrelated edits. |
++-----------+--------------+---------+-----------+-------------------------------------------------------------+
 
 ## Modifying Commit History
 
@@ -247,6 +258,9 @@ git merge-base --is-ancestor *A* *B*
 `git fetch && git reset origin/main --soft`
 :   Update commit history locally after remote branch(here *origin/main*) was force pushed but leave files intact
 
+`git reset --hard ...`
+:   Affect the state of **tracked files and staging area**. Untracked files are unaffected
+
 ## Displaying Files and Differences
 
 ### Viewing Commit Logs
@@ -301,6 +315,7 @@ current directory. Therefore, it makes sense to be in the root worktree folder.
 `*.ipynb  diff=false\n*.py     diff=false`
 : Achieves the same as above permanently if added to **.gitattributes** files that has been committed.
 Obviously substitute a newline char with an actual newline.
+
 
 `git diff` \[*Rev1*]:\[*Object1*] \[*Rev2*]:\[*Object2*]
 :   Ex. compare 2 files **git diff HEAD^1:README.md HEAD:README.md** or two branches **git diff develop main**
@@ -425,6 +440,9 @@ git verify-(commit|tag|pack) *Object*
 
 *Reference(Ref)*
 :   A pointer to a commit graph. View via *git reflog*
+
+`.git/info/exclude`
+:   File containing local ignore rules that will never be committed
 
 ### Commands to Help with Viewing Internals
 
