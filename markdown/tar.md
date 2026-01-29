@@ -93,6 +93,9 @@ tar -\-*COMPRESSOR* \[*FOLDER*...] \[*FILE*...] -cvf *ARCHIVE*.tar.*EXT*
 tar -acf **ArhiveName.tar.ext** -C **FolderName** .
 :   Compress all files in **FolderName**
 
+tar -cvzf a.tar.gz --exclude '.fseventsd' --transform="s/^rm_me/investigation_$(now)/" rm_me
+:   Exclude a folder from archive(same syntax for a file), rename the root folder in the archive to a new name(uses sed format). Valid for GNU tar
+
 Say `~/Downloads/sample_folder` has files f1, f2, inner/f3.
 
 `tar -czvf archive.tar.gz -C ~/Downloads/sample_folder .`
