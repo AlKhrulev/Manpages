@@ -250,7 +250,7 @@ git rebase --exec "git commit --amend --no-edit -n -S" -i *GitRevision*
 :   sign older commits via rebasing
 
 git merge-base --is-ancestor *A* *B*
-:    Is commit *A* an ancestor of commit *B*? If yes (exit code 0), then a fast-forward merge from *A* to *B* is possible.
+:    Is commit *A* an ancestor of commit *B*? If yes (exit code 0), then a fast-forward merge from *A* to *B* is possible. This is the same as: can you fast-forward *A* to *B*? Or, is *A* a part of *B*?
 
 `git merge-base --is-ancestor origin/develop HEAD`
 :   Ex. of the one above. Returns 0 => we can fast-forward *origin/develop* to *HEAD*
@@ -359,6 +359,9 @@ git fetch \[*Remote*]/git push \[*Remote*] \[*Branch*]
 
 `git checkout -b new_branch && git push --set-upstream origin new_branch`
 :   Set tracking for git branch to a new branch that doesn't exist on remote
+
+git switch --no-track -c *NewBranchName* *COMMIT* && git push -u origin
+:   Identical to above command, where you create a new branch and set tracking for upstream
 
 `git worktree add ../manifest origin/develop -b update-security-manifest`
 :   Add a new tree based on `origin/develop` and create a new branch called `update-security-manifest`. Use the command above to change tracking to a completely new branch!
@@ -469,6 +472,9 @@ git cat-file -p *SHA*
 
 git verify-pack -v *Pack*
 :   View pack file content
+
+git check-ignore [-v] File..
+:   Print why a particular file is being ignored
 
 ### TODO
 
