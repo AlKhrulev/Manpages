@@ -1,6 +1,10 @@
 set shell := ["zsh", "-uc"]
 # default system section name string separated by ":"
-all_sections := `grep '^SECTION' /etc/manpath.config | tr -s ' \t' ':' | cut -d ":" -f2-`
+all_sections := if os() == "macos" {
+    `grep '^MANSECT' /etc/man.conf | awk '{print $NF}'`
+} else {
+    `grep '^SECTION' /etc/manpath.config | tr -s ' \t' ':' | cut -d ":" -f2-`
+}
 alias p := preview
 alias b := build
 
@@ -30,11 +34,12 @@ convert section="ak": verify_dependencies
 # set up a file structure and convert all markdown files into man pages
 [group("build")]
 @build section="ak": (mkdir section) (convert section)
+    {{ if os() == "macos" { "sudo ln -sfn $(realpath rendered_pages/man" + section + ") /usr/local/share/man/man" + section } else { "true" } }}
     ls rendered_pages/man{{section}}
     [ "$(ls -l markdown/ | wc -l)" -eq "$(ls -l rendered_pages/man{{section}} | wc -l)" ]
-    echo "add the line 'export MANPATH=\$(manpath):$(realpath rendered_pages)' to your .zshrc file" 
-    echo "add 'export MANSECT={{all_sections}}:{{section}}' to your .zshrc"
-    echo "also check ~/.zshenv (if you use zsh)"
+    #echo "add the line 'export MANPATH=\$(manpath):$(realpath rendered_pages)' to your .zshrc file"
+    #echo "add 'export MANSECT={{all_sections}}:{{section}}' to your .zshrc"
+    #echo "also check ~/.zshenv (if you use zsh)"
 
 # build & preview a single man page(without extension!)
 [group("build")]
@@ -57,3 +62,6 @@ uncompress section="ak":
 [group("utils")]
 clean:
     rm -vR rendered_pages/*
+t:
+	pandoc --standalone -t man -o git.ak markdown/git.md
+
