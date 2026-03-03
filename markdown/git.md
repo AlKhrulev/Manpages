@@ -199,12 +199,12 @@ fixup
 :   disregard the message of source commit and simply use the target's one
 
 `A->B->C, C=HEAD`
-:   Can squash C->B, B->A, not reverse.ß
+:   Can squash C->B, B->A, not reverse.
 
 ### Commands
 
 git rebase *UPSTREAM*
-:   integrate all changes that are not in *UPSTREAM* but in HEAD into *UPSTREAM*(i.e. commits from `git log UPSTREAM..HEAD`)
+:   integrate all changes that are not in *UPSTREAM* but in HEAD into *UPSTREAM*(i.e. commits from `git log UPSTREAM..HEAD`). Essentially, UPSTREAM acts as a GROUND_TRUTH, so you don't have to approve anything there, it is accepted by default, while the changes made not on UPSTREAM must be verified.
 
 git rebase *CommitHash*^
 :   rebase from *CommitHash*(inclusive). Typically what you want
@@ -316,7 +316,6 @@ current directory. Therefore, it makes sense to be in the root worktree folder.
 : Achieves the same as above permanently if added to **.gitattributes** files that has been committed.
 Obviously substitute a newline char with an actual newline.
 
-
 `git diff` \[*Rev1*]:\[*Object1*] \[*Rev2*]:\[*Object2*]
 :   Ex. compare 2 files **git diff HEAD^1:README.md HEAD:README.md** or two branches **git diff develop main**
 
@@ -326,15 +325,31 @@ Obviously substitute a newline char with an actual newline.
 `git diff --ignore-space-at-eol ...`
 :   Ignore only EOL space diffs(i.e. trailing spaces)
 
+`GIT_EXTERNAL_DIFF=difft git diff`
+:   Set diff program for a single run
+
 ### Determining Who Made Changes
 
-`git blame` by default only shows the *final* revision that modified each line. To see the *entire* history, you need to specify a range that encompasses the *single* line you're interested in.
+`git blame` by default only shows the *final* revision that modified each line. To see the *entire* history, you need to specify a range that encompasses the *single* line you're interested in and use `git log`.
 
 git blame -L 34,34 *fileName*
 :   get all revisions for a particular file line
 
 git blame -L 1,2 -L 8,11 \[-L ...\]
 :   Find who made the changes for multiple lines
+
+`git log -L <start>,<end>:<file>`
+:   Show every commit that modified lines.
+
+`git log --follow ...`
+:   Follow file renames
+
+`git log -L :my_function:file.c`
+:   Supposedly follow changes of a single function in git
+
+git log -S *String*
+:   Identify all commits where String got added/deleted/duplicated/replaced. Compares counts, so if the line has the same number of *String* as before it will not be flagged!!
+
 
 ## Working with Remotes
 
@@ -447,6 +462,12 @@ git verify-(commit|tag|pack) *Object*
 `.git/info/exclude`
 :   File containing local ignore rules that will never be committed
 
+`FETCH_HEAD`
+:   A special file/ref in Git that records the remove branch(es) (tips) that were fetched during the most recent `git fetch` command.  You can use it to reference the latest fetched commit, for example with `git merge FETCH_HEAD` to merge what you just fetched. Stored in `.git/FETCH_HEAD`
+
+`git merge = git fetch && git merge FETCH_HEAD`
+:   Example of using FETCH_HEAD
+
 ### Commands to Help with Viewing Internals
 
 git show-branch *BranchName*
@@ -480,3 +501,4 @@ git check-ignore [-v] File..
 
 git branch *Name* *Revision*
 :   Create a new branch without switching to it(compared to **checkout** or **switch**)
+
