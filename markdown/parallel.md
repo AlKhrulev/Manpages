@@ -260,3 +260,13 @@ parallel --xapply 'ssh {1} {2}' ::: host1 host2 ::: 'uptime' 'df -h'
 ```bash
 parallel 'mkdir -p {//}/out; cp {} {//}/out/{/}' ::: **/*.txt
 ```
+
+### Support interactive jobs
+
+```bash
+# doesn't attach tty by default=>no interactive work is possible otherwise
+parallel --tty "just open-url '{}' && read 'ans?confirm? '" ::: BR CA AU AS
+
+# make shell independent to avoid failing due to shell builtins
+parallel --tty zsh -c 'just open-url "$1" && read "ans?confirm? "' _ {} ::: BR CA AU AS
+```
