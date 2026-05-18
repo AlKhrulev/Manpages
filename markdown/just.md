@@ -296,3 +296,12 @@ just push api env=prod
 * `recipe: dep1 (dep2 arg)` defines dependencies.
 * Linewise by default; use `&&` or a shebang for real scripts.
 
+## Use stdout instead of a justfile
+
+```bash
+❯ just --justfile - hello
+hello:
+ echo hello world!
+echo hello world!
+hello world!
+```
