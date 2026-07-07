@@ -502,3 +502,15 @@ git check-ignore [-v] File..
 git branch *Name* *Revision*
 :   Create a new branch without switching to it(compared to **checkout** or **switch**)
 
+gut clone --depth 1 ... <url>
+:   Shallow Clone
+
+git clone --depth 1 --single-branch <url>
+:   Shallow Clone + single branch only
+
+git clone --depth 1 --no-checkout ... <url>
+:   Clone only metadata(.git) without actual files
+
+git clone ... --filter=blob:none <url>
+:   Clone history but not file contents
+
