@@ -292,6 +292,8 @@ git log --author="*email@example.com*"
 `git shortlog -s ...`
 :   Get commit counts only.
 
+See *"Determining Who Made Changes"* below for log search options.
+
 ### Viewing Files
 
 `git show` \[\[*Rev*]:\[*Object*]...]
@@ -346,6 +348,12 @@ git blame -L 1,2 -L 8,11 \[-L ...\]
 
 `git log -L :my_function:file.c`
 :   Supposedly follow changes of a single function in git
+
+git log --grep="*Pattern*"
+:   Find commits whose *messages* match *Pattern*.
+
+git log -G "*Regex*"
+:   Find commits whose *diffs* add or remove lines matching *Regex*.
 
 git log -S *String*
 :   Identify all commits where String got added/deleted/duplicated/replaced. Compares counts, so if the line has the same number of *String* as before it will not be flagged!!
