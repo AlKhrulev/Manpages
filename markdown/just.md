@@ -305,3 +305,15 @@ hello:
 echo hello world!
 hello world!
 ```
+
+## Run `shellcheck` on shell tasks
+
+```bash
+set -euo pipefail
+
+# these are example recipes names
+for recipe in start resume start-x0 resume-x0 start-bc resume-bc; do
+    echo "ShellCheck: $recipe"
+    just --dry-run "$recipe" 2>&1 | shellcheck --shell=bash -
+done
+```
