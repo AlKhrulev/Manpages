@@ -44,6 +44,22 @@ Breakpoint 1 at .../remove_me.py:1
 5
 ```
 
+## Pickle
+
+```shell
+# view pickle file via CLI
+python3 -m pickletools suspicious.pkl
+```
+
+Alternative in python:
+
+```python
+import pickletools
+
+with open("suspicious.pkl", "rb") as f:
+    pickletools.dis(f)
+```
+
 ## References
 
 https://eddieantonio.ca/blog/2015/12/18/authoring-manpages-in-markdown-with-pandoc/
