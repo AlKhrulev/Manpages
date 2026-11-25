@@ -112,7 +112,7 @@ uv run \[*UvArgs*...] *Filename*.py \[*FileArgs*...]
 :   Analogous to uv run python *Filename*.py(i.e. **"script mode"**) but **uv inspects the script** for PEP 723 inline dependency metadata. The .py exception is mandatory for uv to recognize that the argument is actually a python script that has to be run. The usual resolution order for selecting python interpreter for `uv run` is applied(i.e. project->active venv->.venv folder in current or parent folders->check `PATH`).
 
 `uv run ./someFile`
-:   This **will not work** as uv will be looking for a command ./someFile using the command mode! See below for the correct versionß
+:   This **will not work** as uv will be looking for a command ./someFile using the command mode! See below for the correct version
 
 `uv run python someFile`
 :   This will work as we explicitly use the correct command. However, this looks to be ignoring PEP 723 Inline script metadata(i.e. no automatic empheral env. set up for you )
@@ -840,3 +840,23 @@ uv run something ...
   dev = ["pytest", "mypy"]
   docs = ["sphinx"]
   ```
+
+## Build dependency
+
+Say one packages depends on another for installation purposes. What to do?
+
+```toml
+[dependencies]
+box2d-py...
+...
+# note, no need to declare swig as dependency!
+
+# declare that swig is needed before box2d-py
+[tool.uv.extra-build-dependencies]
+box2d-py = ["swig"]
+
+```
+
+## All settings reference
+
+Use this [link](https://docs.astral.sh/uv/reference/settings/)
