@@ -261,6 +261,13 @@ parallel --xapply 'ssh {1} {2}' ::: host1 host2 ::: 'uptime' 'df -h'
 parallel 'mkdir -p {//}/out; cp {} {//}/out/{/}' ::: **/*.txt
 ```
 
+### Use pipe operator in a command
+
+```bash
+# enclose in single quotes, -q doesn't work
+parallel 'exiftool {} | rg "Image Size"' ::: *.jpg
+```
+
 ### Support interactive jobs
 
 ```bash
